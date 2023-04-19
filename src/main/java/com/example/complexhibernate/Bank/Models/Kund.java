@@ -14,7 +14,7 @@ public class Kund {
     private String name;
     private String födelsenummer;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     //Om man vill ange något annat namn till sina foreign keys: @JoinColumn(name="myFK", referencedColumnName = "kreditvärdighet")
     @JoinColumn//Default: FK-kolumn kommer att heta kpi_id
     private Kpi kpi;
@@ -22,6 +22,6 @@ public class Kund {
     public Kund(String name, String födelsenummer, Kpi kpi) {
         this.name = name;
         this.födelsenummer = födelsenummer;
-        this.kpi=kpi;
+        this.kpi = kpi;
     }
 }

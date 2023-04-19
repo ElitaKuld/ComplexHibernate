@@ -16,33 +16,39 @@ public class KundController {
     private final KundRepo kundRepo;
     private final KpiRepo kpiRepo;
 
-    KundController(KpiRepo kpiRepo, KundRepo kundRepo){
-        this.kundRepo=kundRepo;
-        this.kpiRepo=kpiRepo;
+    KundController(KpiRepo kpiRepo, KundRepo kundRepo) {
+        this.kundRepo = kundRepo;
+        this.kpiRepo = kpiRepo;
     }
 
     @RequestMapping("kunder")
-    public List<Kund> getAllCustomers(){
+    public List<Kund> getAllCustomers() {
         return kundRepo.findAll();
     }
 
     @RequestMapping("kunder/add")
-    public String addCustomer(@RequestParam String namn, @RequestParam String fodelsenummer,@RequestParam Long id){
+    public String addCustomer(@RequestParam String namn, @RequestParam String fodelsenummer, @RequestParam Long id) {
         Kpi kpi = kpiRepo.findById(id).get();
-        kundRepo.save(new Kund(namn,fodelsenummer, kpi));
+        kundRepo.save(new Kund(namn, fodelsenummer, kpi));
         return "kund " + namn + " added";
     }
 
     @RequestMapping("kunder/add2")
-    public String addCustomer2(@RequestParam String namn, @RequestParam String fodelsenummer, @RequestParam int credit){
+    public String addCustomer2(@RequestParam String namn, @RequestParam String fodelsenummer, @RequestParam int credit) {
         Kpi kpi = new Kpi(credit);
-        kpiRepo.save(kpi);
-        kundRepo.save(new Kund(namn,fodelsenummer, kpi));
+    //    kpiRepo.save(kpi); // Behöver inte när vi har lagt in cascading
+        kundRepo.save(new Kund(namn, fodelsenummer, kpi));
         return "kund " + namn + " added";
     }
 
     @RequestMapping("kunder/{id}")
-    public Kund getCustomerById(@PathVariable long id){
+    public Kund getCustomerById(@PathVariable long id) {
         return kundRepo.findById(id).get();
+    }
+
+    @RequestMapping("kunder/delete/{id}")
+    public String deleteCustomerById(@PathVariable long id) {
+        kundRepo.deleteById(id);
+        return "kund " + id + " togs bort";
     }
 }
