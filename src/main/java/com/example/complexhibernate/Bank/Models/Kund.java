@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -25,6 +28,7 @@ public class Kund {
         this.kpi = kpi;
     }
 
+    //Nedanstående hör till N-1-relationen
     @ManyToOne
     @JoinColumn
     private Kategori kategori;
@@ -34,5 +38,14 @@ public class Kund {
         this.födelsenummer = födelsenummer;
         this.kpi = kpi;
         this.kategori = kategori;
+    }
+
+    //Nedanstående hör till N-M-relationen
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable
+    private List<Konto> konto = new ArrayList<>();
+
+    public void addKonto(Konto k){
+        konto.add(k);
     }
 }

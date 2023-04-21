@@ -1,9 +1,11 @@
 package com.example.complexhibernate.Bank.Controllers;
 
 import com.example.complexhibernate.Bank.Models.Kategori;
+import com.example.complexhibernate.Bank.Models.Konto;
 import com.example.complexhibernate.Bank.Models.Kpi;
 import com.example.complexhibernate.Bank.Models.Kund;
 import com.example.complexhibernate.Bank.Repos.KategoriRepo;
+import com.example.complexhibernate.Bank.Repos.KontoRepo;
 import com.example.complexhibernate.Bank.Repos.KpiRepo;
 import com.example.complexhibernate.Bank.Repos.KundRepo;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,11 +20,13 @@ public class KundController {
     private final KundRepo kundRepo;
     private final KpiRepo kpiRepo;
     private final KategoriRepo kategoriRepo;
+    private final KontoRepo kontoRepo;
 
-    KundController(KpiRepo kpiRepo, KundRepo kundRepo, KategoriRepo kategoriRepo) {
+    KundController(KpiRepo kpiRepo, KundRepo kundRepo, KategoriRepo kategoriRepo, KontoRepo kontoRepo) {
         this.kundRepo = kundRepo;
         this.kpiRepo = kpiRepo;
         this.kategoriRepo = kategoriRepo;
+        this.kontoRepo = kontoRepo;
     }
 
     @RequestMapping("kunder")
@@ -61,5 +65,50 @@ public class KundController {
         Kategori kategori = kategoriRepo.findById(kategoriid).get();
         kundRepo.save(new Kund(namn, fodelsenummer, new Kpi(credit), kategori));
         return "kund " + namn + " added";
+    }
+
+    //Nedanstående hör till N-M-relationen
+    @RequestMapping("kunder/addKonto")
+    public String addKonto(@RequestParam Long kundId, @RequestParam int saldo,
+                           @RequestParam int ranta) {
+        Kund kund = kundRepo.findById(kundId).get();
+        if (kund != null) {
+            kund.addKonto(new Konto(saldo, ranta));
+            kundRepo.save(kund);
+        }
+        return "konto lades till hos kund med id " + kundId;
+    }
+
+    @RequestMapping("kunder/addKonto2")
+    public String addKonto(@RequestParam Long kundId, @RequestParam Long kontoId) {
+        Kund kund = kundRepo.findById(kundId).get();
+        Konto konto = kontoRepo.findById(kontoId).get();
+        if (kund != null && konto != null) {
+            kund.addKonto(konto);
+            kundRepo.save(kund);
+        }
+        return "konto lades till hos kund med id " + kundId;
+    }
+
+    @RequestMapping("kunder/changeKonto")
+    public String changeKonto(@RequestParam Long kundId, @RequestParam Long kontoId, @RequestParam int saldo) {
+        Kund kund = kundRepo.findById(kundId).get();
+        Konto konto = kontoRepo.findById(kontoId).get();
+        if (kund != null && konto != null) {
+            kund.getKonto().stream().filter(kundKonto -> kundKonto.getId() == konto.getId()).findAny().get().setSaldo(saldo);
+            kundRepo.save(kund);
+        }
+        return "konto (saldo) ändrades hos kund med id " + kundId;
+    }
+
+    @RequestMapping("kunder/changeKonto2")
+    public String changeKonto2(@RequestParam Long kundId, @RequestParam Long kontoId, @RequestParam int ranta) {
+        Kund kund = kundRepo.findById(kundId).get();
+        Konto konto = kontoRepo.findById(kontoId).get();
+        if (kund != null && konto != null) {
+            kund.getKonto().stream().filter(kundKonto -> kundKonto.getId() == konto.getId()).findAny().get().setRanta(ranta);
+            kundRepo.save(kund);
+        }
+        return "konto (ränta) ändrades hos kund med id " + kundId;
     }
 }
