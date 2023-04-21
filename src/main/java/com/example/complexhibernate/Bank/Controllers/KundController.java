@@ -1,7 +1,9 @@
 package com.example.complexhibernate.Bank.Controllers;
 
+import com.example.complexhibernate.Bank.Models.Kategori;
 import com.example.complexhibernate.Bank.Models.Kpi;
 import com.example.complexhibernate.Bank.Models.Kund;
+import com.example.complexhibernate.Bank.Repos.KategoriRepo;
 import com.example.complexhibernate.Bank.Repos.KpiRepo;
 import com.example.complexhibernate.Bank.Repos.KundRepo;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,10 +17,12 @@ import java.util.List;
 public class KundController {
     private final KundRepo kundRepo;
     private final KpiRepo kpiRepo;
+    private final KategoriRepo kategoriRepo;
 
-    KundController(KpiRepo kpiRepo, KundRepo kundRepo) {
+    KundController(KpiRepo kpiRepo, KundRepo kundRepo, KategoriRepo kategoriRepo) {
         this.kundRepo = kundRepo;
         this.kpiRepo = kpiRepo;
+        this.kategoriRepo = kategoriRepo;
     }
 
     @RequestMapping("kunder")
@@ -36,7 +40,7 @@ public class KundController {
     @RequestMapping("kunder/add2")
     public String addCustomer2(@RequestParam String namn, @RequestParam String fodelsenummer, @RequestParam int credit) {
         Kpi kpi = new Kpi(credit);
-    //    kpiRepo.save(kpi); // Behöver inte när vi har lagt in cascading
+        //    kpiRepo.save(kpi); // Behöver inte när vi har lagt in cascading
         kundRepo.save(new Kund(namn, fodelsenummer, kpi));
         return "kund " + namn + " added";
     }
@@ -50,5 +54,12 @@ public class KundController {
     public String deleteCustomerById(@PathVariable long id) {
         kundRepo.deleteById(id);
         return "kund " + id + " togs bort";
+    }
+
+    @RequestMapping("kunder/add3")
+    public String addCustomer3(@RequestParam String namn, @RequestParam String fodelsenummer, @RequestParam int credit, @RequestParam Long kategoriid) {
+        Kategori kategori = kategoriRepo.findById(kategoriid).get();
+        kundRepo.save(new Kund(namn, fodelsenummer, new Kpi(credit), kategori));
+        return "kund " + namn + " added";
     }
 }

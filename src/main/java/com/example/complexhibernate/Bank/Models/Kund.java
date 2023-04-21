@@ -24,4 +24,15 @@ public class Kund {
         this.födelsenummer = födelsenummer;
         this.kpi = kpi;
     }
+
+    @ManyToOne
+    @JoinColumn
+    private Kategori kategori;
+
+    public Kund(String name, String födelsenummer, Kpi kpi, Kategori kategori) {
+        this.name = name;
+        this.födelsenummer = födelsenummer;
+        this.kpi = kpi;
+        this.kategori = kategori;
+    }
 }
