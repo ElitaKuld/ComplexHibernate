@@ -1,7 +1,6 @@
 package com.example.complexhibernate.Bank.Controllers;
 
 import com.example.complexhibernate.Bank.Models.Konto;
-import com.example.complexhibernate.Bank.Models.Kund;
 import com.example.complexhibernate.Bank.Repos.KontoRepo;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,7 +1,6 @@
 package com.example.complexhibernate.Bank.Controllers;
 
 import com.example.complexhibernate.Bank.Models.Kategori;
-import com.example.complexhibernate.Bank.Models.Kund;
 import com.example.complexhibernate.Bank.Repos.KategoriRepo;
 import com.example.complexhibernate.Bank.Repos.KundRepo;
 import org.springframework.web.bind.annotation.*;
