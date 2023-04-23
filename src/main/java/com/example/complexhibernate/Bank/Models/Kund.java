@@ -1,5 +1,6 @@
 package com.example.complexhibernate.Bank.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +31,8 @@ public class Kund {
 
     //Nedanstående hör till N-1-relationen
     @ManyToOne
-    @JoinColumn
+    @JoinColumn // foreign key ska ligga i kundklassen
+    @JsonIgnore // för att ta hand om cirkulära referenser/bryta cirkulära loopen
     private Kategori kategori;
 
     public Kund(String name, String födelsenummer, Kpi kpi, Kategori kategori) {
@@ -45,7 +47,7 @@ public class Kund {
     @JoinTable
     private List<Konto> konto = new ArrayList<>();
 
-    public void addKonto(Konto k){
+    public void addKonto(Konto k) {
         konto.add(k);
     }
 }
