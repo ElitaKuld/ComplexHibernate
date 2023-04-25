@@ -40,11 +40,11 @@ public class KategoriController {
         return kategoriRepo.findById(id).get();
     }
 
-    /*
+
     @PostMapping("/kategorier/addByPost")
     public String addBookByPOST(@RequestBody Kategori k){
         kategoriRepo.save(k);
         return "Kategori "+k.getName()+" lades till";
-    }*/
+    }
 
 }
